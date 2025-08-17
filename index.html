@@ -1,25 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Tutorías</title>
+    <meta charset="UTF-8">
+    <title>Tutorías</title>
 </head>
 <body>
-  <h1>Gestión de Tutorías</h1>
+    <h1>Gestión de Tutorías</h1>
 
-  <button onclick="enviarDatos()">Enviar ejemplo</button>
+    <button onclick="enviarDatos()">Enviar ejemplo</button>
 
-  <script src="config.js"></script>
-  <script>
-    function enviarDatos() {
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({nombre: "Prueba", curso: "4ºA"})
-      })
-      .then(res => res.text())
-      .then(data => alert("Respuesta: " + data))
-      .catch(err => alert("Error: " + err));
-    }
-  </script>
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
