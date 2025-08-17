@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tutorías – Reserva (Martes 14:00–15:00)</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta name="description" content="Reserva de cita de tutoría: martes de 14:00 a 15:00 (media hora o una hora).">
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <h1 class="brand">Tutorías · Martes 14:00–15:00</h1>
+    <p class="muted">Elige una fecha (martes), consulta disponibilidad y solicita tu reserva. La tutora confirmará por email.</p>
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>1) Elige fecha (martes)</h2>
+    <div class="dates" id="dates"></div>
+    <p class="hint">Solo se admiten reservas en martes. Puedes ver disponibilidad para las próximas semanas.</p>
+  </section>
+
+  <section class="card">
+    <h2>2) Elige duración</h2>
+    <div class="duration">
+      <label><input type="radio" name="duration" value="30" checked> 30 minutos</label>
+      <label><input type="radio" name="duration" value="60"> 60 minutos</label>
+    </div>
+    <p class="hint">Opciones válidas: 14:00–14:30, 14:30–15:00 o 14:00–15:00 (1 hora). Nunca se asignan dos horas seguidas.</p>
+  </section>
+
+  <section class="card">
+    <h2>3) Elige hora</h2>
+    <div id="slots" class="slots"></div>
+    <p id="legend" class="legend">
+      <span class="tag free">Libre</span>
+      <span class="tag pending">Pendiente</span>
+      <span class="tag taken">Ocupada</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>4) Datos de la familia</h2>
+    <form id="requestForm" class="form">
+      <div class="grid">
+        <label>Nombre y apellidos (madre/padre/tutor)
+          <input required name="parentName" autocomplete="name">
+        </label>
+        <label>Nombre del alumno/a
+          <input required name="studentName">
+        </label>
+      </div>
+      <div class="grid">
+        <label>Email de contacto
+          <input required type="email" name="email">
+        </label>
+        <label>Teléfono (opcional)
+          <input type="tel" name="phone">
+        </label>
+      </div>
+      <label>Comentarios (opcional)
+        <textarea name="note" rows="3" placeholder="¿Motivo de la reunión?"></textarea>
+      </label>
+      <label class="consent">
+        <input type="checkbox" name="consent" required>
+        <span>Doy mi consentimiento para el tratamiento de mis datos a fin de gestionar la cita de tutoría.</span>
+      </label>
+      <div class="actions">
+        <button class="btn" type="submit">Solicitar reserva</button>
+        <span id="status" class="status" role="status" aria-live="polite"></span>
+      </div>
+      <p class="hint">Tras solicitar, la cita queda <strong>PENDIENTE</strong>. La tutora confirmará por email.</p>
+    </form>
+  </section>
+
+  <section class="card">
+    <details>
+      <summary>Ayuda & Privacidad (RGPD)</summary>
+      <ul>
+        <li>Solo se registran los datos enviados para gestionar la cita.</li>
+        <li>Las reservas pueden estar: Libre, Pendiente o Ocupada (confirmada).</li>
+        <li>Puedes pedir la eliminación de tus datos escribiendo a la tutora.</li>
+      </ul>
+    </details>
+  </section>
+</main>
+
+<footer class="footer">© <span id="year"></span> Tutorías</footer>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+*{box-sizing:border-box}
+:root{--bg:#f6f8fb;--card:#fff;--text:#1f2a44;--muted:#6b7280;--brand:#1b6ef3;--line:#e5e7eb;--free:#10b981;--pending:#f59e0b;--taken:#ef4444}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+.topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 18px;z-index:10}
+.brand{margin:0}
+.muted{color:var(--muted);margin:6px 0 0}
+main{max-width:900px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.hint{color:var(--muted);font-size:13px}
+.footer{padding:24px;text-align:center;color:var(--muted)}
+.dates{display:flex;gap:8px;flex-wrap:wrap}
+.date-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;cursor:pointer}
+.date-btn.active{border-color:var(--brand);color:var(--brand);font-weight:700}
+.duration{display:flex;gap:16px}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+.form input,.form textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:#fff;font:inherit}
+.actions{display:flex;align-items:center;gap:12px;margin-top:12px}
+.btn{background:var(--brand);color:#fff;border:none;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer}
+.status{color:var(--muted)}
+.slots{display:grid;grid-template-columns:1fr;gap:12px}
+.slot{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+.slot .left{display:flex;align-items:center;gap:10px}
+.badge{padding:2px 8px;border-radius:999px;font-size:12px}
+.free{background:#ecfdf5;color:#065f46;border:1px solid #d1fae5}
+.pending{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.taken{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.tag{border-radius:999px;padding:4px 8px;border:1px solid var(--line);font-size:12px}
+.legend{display:flex;gap:8px;align-items:center}
+.hide{display:none !important}

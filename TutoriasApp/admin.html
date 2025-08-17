@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin · Tutorías</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .login{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+    .login input{padding:10px;border:1px solid var(--line);border-radius:8px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+    th{font-weight:700}
+    .pill{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px}
+    .ok{background:#ecfdf5}
+    .warn{background:#fffbeb}
+    .err{background:#fef2f2}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <h1 class="brand">Administración de Tutorías</h1>
+    <p class="muted">Confirma o rechaza solicitudes. Protegido por token.</p>
+  </div>
+</header>
+<main>
+  <section class="card">
+    <div class="login">
+      <label>API Base (Apps Script)
+        <input id="apiBase" placeholder="https://script.google.com/.../exec">
+      </label>
+      <label>Token admin
+        <input id="token" placeholder="TOKEN_ADMIN" type="password">
+      </label>
+      <button class="btn" id="btnSave">Entrar</button>
+      <span id="loginMsg" class="hint"></span>
+    </div>
+    <div class="actions">
+      <button class="btn" id="btnLoad">Cargar pendientes</button>
+      <button class="btn outline" id="btnToday">Ver hoy</button>
+      <button class="btn outline" id="btnNextTuesday">Próximo martes</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Pendientes</h2>
+    <div id="pending"></div>
+  </section>
+
+  <section class="card">
+    <h2>Por fecha</h2>
+    <div class="login">
+      <input id="date" type="date">
+      <button class="btn" id="btnListDate">Ver reservas</button>
+    </div>
+    <div id="byDate"></div>
+  </section>
+</main>
+
+<script>
+function saveCreds(){
+  localStorage.setItem('tutorias_apiBase', document.getElementById('apiBase').value.trim());
+  localStorage.setItem('tutorias_token', document.getElementById('token').value.trim());
+}
+function loadCreds(){
+  document.getElementById('apiBase').value = localStorage.getItem('tutorias_apiBase') || '';
+  document.getElementById('token').value = localStorage.getItem('tutorias_token') || '';
+}
+loadCreds();
+document.getElementById('btnSave').addEventListener('click', ()=>{
+  saveCreds();
+  document.getElementById('loginMsg').textContent = 'Guardado.';
+});
+
+async function listPending(){
+  const api = document.getElementById('apiBase').value.trim();
+  const token = document.getElementById('token').value.trim();
+  if(!api||!token){ alert('Completa API y token'); return; }
+  const res = await fetch(api + '?action=listAllPending&token=' + encodeURIComponent(token));
+  const data = await res.json();
+  renderTable('pending', data.items || []);
+}
+document.getElementById('btnLoad').addEventListener('click', listPending);
+
+document.getElementById('btnListDate').addEventListener('click', async ()=>{
+  const api = document.getElementById('apiBase').value.trim();
+  const token = document.getElementById('token').value.trim();
+  const date = document.getElementById('date').value;
+  if(!api||!date){ alert('Completa API y fecha'); return; }
+  const res = await fetch(api + '?action=list&date=' + encodeURIComponent(date));
+  const data = await res.json();
+  renderTable('byDate', data.bookings || []);
+});
+
+document.getElementById('btnToday').addEventListener('click', ()=>{
+  document.getElementById('date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('btnListDate').click();
+});
+document.getElementById('btnNextTuesday').addEventListener('click', ()=>{
+  const d = new Date(); const diff = (2 - d.getDay() + 7) % 7 || 7; d.setDate(d.getDate()+diff);
+  document.getElementById('date').value = d.toISOString().slice(0,10);
+  document.getElementById('btnListDate').click();
+});
+
+async function decide(reqId, decision){
+  const api = document.getElementById('apiBase').value.trim();
+  const token = document.getElementById('token').value.trim();
+  const url = api + '?action=confirm&reqId=' + encodeURIComponent(reqId) + '&decision=' + decision + '&token=' + encodeURIComponent(token);
+  const res = await fetch(url);
+  const out = await res.json();
+  if(out.ok){
+    listPending();
+    alert(decision==='confirm'?'Confirmada':'Cancelada');
+  }else{
+    alert('Error: ' + (out.message||'no se pudo actualizar'));
+  }
+}
+
+function renderTable(containerId, items){
+  const el = document.getElementById(containerId);
+  if(!items.length){ el.innerHTML = '<p class="hint">No hay datos.</p>'; return; }
+  const rows = items.map(it=>{
+    const badge = it.status==='pending' ? '<span class="pill warn">Pendiente</span>'
+                : it.status==='confirmed' ? '<span class="pill ok">Confirmada</span>'
+                : '<span class="pill err">Cancelada</span>';
+    const actions = it.status==='pending'
+      ? `<button class="btn" onclick="decide('${it.reqId}','confirm')">Confirmar</button>
+         <button class="btn outline" onclick="decide('${it.reqId}','cancel')">Rechazar</button>`
+      : '';
+    return `<tr>
+      <td>${it.date||''}</td>
+      <td>${it.start||''}–${it.end||''}</td>
+      <td>${(it.student||it.studentName)||''}</td>
+      <td>${(it.parentName)||''}</td>
+      <td>${badge}</td>
+      <td>${actions}</td>
+    </tr>`;
+  }).join('');
+  el.innerHTML = `<div style="overflow:auto">
+    <table>
+      <thead><tr><th>Fecha</th><th>Hora</th><th>Alumno/a</th><th>Familia</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+</script>
+</body>
+</html>
